@@ -7,11 +7,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import java.util.logging.Logger;
 
 /**
  * Created by 大灯泡 on 2016/6/23.
@@ -256,7 +259,7 @@ public class CircleProgressView extends View implements View.OnClickListener {
         setVisibility(VISIBLE);
         this.isFailed = true;
         if (defaultWidth != 0) {
-            getLayoutParams().width = defaultWidth * 3;
+            getLayoutParams().width = defaultWidth * 3 >= getWidthOrHeight(true) ? getWidthOrHeight(true) : defaultWidth * 3;
             setLayoutParams(getLayoutParams());
         }
         textPaint.setTextSize(30);
@@ -384,6 +387,24 @@ public class CircleProgressView extends View implements View.OnClickListener {
      */
     public static int dipToPx(Context context, float dip) {
         return (int) (dip * context.getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    /**
+     * 获取屏幕宽高
+     *
+     * @param isWidth 是否用取宽度
+     */
+    private int getWidthOrHeight(boolean isWidth) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+        if (DEBUG) {
+            Log.i("ScreenSize", "widthPixels:" + metrics.widthPixels + "--heightPixels" + metrics.heightPixels);
+        }
+        if (isWidth) {
+            return metrics.widthPixels;
+        } else {
+            return metrics.heightPixels;
+        }
     }
 
     @Override
